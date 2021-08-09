@@ -12,9 +12,7 @@ const ClientesSchema = new Schema({
     required: false
   },
   phone: {
-    type: String,
-    required: true,
-    unique: true
+    type: String
   },
   address: {
     type: String,
@@ -22,19 +20,16 @@ const ClientesSchema = new Schema({
   },
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   lotes: [{
-    lotes_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'lotes'
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'lotes'
   }],
   pagos: [{
-    pagos_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'pagos'
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'pagos'
   }]
 
 }, { timestamps: true })

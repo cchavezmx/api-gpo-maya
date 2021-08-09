@@ -7,34 +7,33 @@ const PagosSchema = new Schema({
     default: true,
     required: false
   },
+  status: {
+    type: Boolean,
+    default: false
+  },
   cliente: [{
-    cliente_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'cliente'
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'cliente'
   }],
   proyecto: [{
-    proyecto_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'proyecto'
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'proyecto'
   }],
   lote: [{
-    lote_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'lote'
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'lote'
+
   }],
   mes: {
-    type: Number,
+    type: String,
     require: true
   },
   refPago: {
     type: String,
     require: false
   },
-  cantidad: {
-    type: Number,
+  mensualidad: {
+    type: String,
     require: true
   }
 

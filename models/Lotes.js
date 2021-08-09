@@ -24,7 +24,7 @@ const LotesSchema = new Schema({
   },
   manzana: {
     type: String,
-    required: true
+    required: false
   },
   precioTotal: {
     type: Number,
@@ -42,8 +42,12 @@ const LotesSchema = new Schema({
     type: Number,
     required: true
   },
-  mensualidades: {
+  mensualidad: {
     type: Number,
+    required: false
+  },
+  inicioContrato: {
+    type: Date,
     required: false
   },
   // aqui se guardara la cantidad de pagos que tiene 

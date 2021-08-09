@@ -1,4 +1,4 @@
-const { Proyecto, Clientes, Lotes } = require('../models')
+const { Proyecto, Clientes, Lotes, Pagos } = require('../models')
 const mongoose = require('mongoose')
 
 module.exports = {
@@ -120,6 +120,166 @@ module.exports = {
 
     return getDataLoteClientName()
     
+  }, 
+  findCliente: async ({ text }) => {
+
+    const regText = text?.split(' ').map(item => new RegExp(`${item}.*`, 'i')) 
+    
+    const queryName = await new Promise((resolve) => {
+      resolve(
+        Clientes.aggregate()
+          .match({ nombre: { $all: regText } })
+          
+      )
+    }).then(res => res)
+
+    return Promise.all([queryName])
+      .then(res => res)
+
+  },
+  findMailCliente: async ({ email }) => {
+    const query = await new Promise((resolve) => {
+      resolve(
+        Clientes.find({ email })
+      )
+    }).then(res => res)
+    return query 
+  },
+  getClienteById: async (id) => {
+    const query = await new Promise((resolve) => {
+      resolve(
+        Clientes.findById(id)
+      )
+    })
+      .then(res => res)
+
+    return query
+  },
+  lotesByIdCliente: async (id) => {
+    
+    const lotesQuery = await new Promise((resolve) => {
+      resolve(
+        Lotes.aggregate()
+          .match({ cliente: mongoose.Types.ObjectId(id) })
+      )
+    }).then(res => res)
+     
+    return lotesQuery
+
+  },
+  addPagoToLote: async (body) => {
+  /** 
+   * DATOS DEL MODELO DE PAGOS
+   * @params cliente { ObjectID }
+   * @params proyecto { ObjectID }
+   * @params lote { ObjectID }
+   * @params mes { string }
+   * @params refPago { string }
+   * @params cantidad { string }
+   * @params { string }
+   * El pago se debe guardar en pago de lote
+   * 
+   */
+
+    return await Pagos(body).save()
+    
+  },
+  getPagosByClienteAndProject: async (clienteId, proyectoId) => {
+
+    const payload = new Promise((resolve) => {
+      resolve(
+        Pagos.aggregate()
+          .match({ cliente: mongoose.Types.ObjectId(clienteId) })
+      )
+    })
+      .then(res => res)
+      .catch(err => console.log(err))
+    
+    const res = await Promise.all([payload])
+      .then(res => res[0])
+
+    return res
+
+  },
+  infoToInvoiceById: async ({ idPago }) => {
+    // traer la informacion del pago
+    const loteInfo = await new Promise((resolve) => {
+      resolve(
+        Pagos.aggregate()
+          .match({ _id: mongoose.Types.ObjectId(idPago) })
+          .lookup({ 
+            from: 'proyectos', 
+            localField: 'proyecto', 
+            foreignField: '_id', 
+            as: 'dataProject'
+          })
+          .lookup({
+            from: 'clientes', 
+            localField: 'cliente', 
+            foreignField: '_id', 
+            as: 'dataClient'
+          })
+          .lookup({
+            from: 'lotes', 
+            localField: 'lote', 
+            foreignField: '_id', 
+            as: 'dataLote'
+          })
+      )
+    }).then(res => res)
+
+    return loteInfo
+
+  },
+  statusPaymentByLoteId: async ({ loteId }) => {
+
+    const agg = [
+      {
+        $match: {
+          _id: mongoose.Types.ObjectId(loteId)
+        }
+      }, {
+        $lookup: {
+          from: 'pagos', 
+          let: {
+            cliente: '$cliente', 
+            proyecto: '$proyecto'
+          }, 
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: [
+                        '$proyecto', '$$proyecto'
+                      ]
+                    }, {
+                      $eq: [
+                        '$cliente', '$$cliente'
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ], 
+          as: 'pagos'
+        }
+      }
+    ]
+    
+    const loteInfo = await new Promise((resolve) => {
+      resolve(
+        Lotes.aggregate(agg)
+      )
+    }).then(res => res)
+
+    return loteInfo
+  },
+  PagarNota: async ({ idPago }) => {
+    console.log(idPago)
+    const query = await Pagos.findByIdAndUpdate(idPago, { status: true })
+    return query
   }
-  
 }
