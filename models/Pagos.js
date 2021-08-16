@@ -1,6 +1,13 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
 
+/**
+* tipos de pago
+* @params normal string de pago mensualidad
+* @params extra string de pago extra
+* @params acreditado string de pago acreditado
+*/
+
 const PagosSchema = new Schema({
   isActive: {
     type: Boolean,
@@ -22,10 +29,9 @@ const PagosSchema = new Schema({
   lote: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'lote'
-
   }],
   mes: {
-    type: String,
+    type: Date,
     require: true
   },
   refPago: {
@@ -33,6 +39,27 @@ const PagosSchema = new Schema({
     require: false
   },
   mensualidad: {
+    type: Number,
+    require: true
+  },
+  ctaBancaria: {
+    type: String,
+    require: false
+  },
+  banco: {
+    type: String,
+    require: false
+  },
+  tipoPago: {
+    // normal, extra, acreditado
+    type: String,
+    require: false
+  },
+  fechaPago: {
+    type: Date,
+    require: false
+  },
+  refBanco: {
     type: String,
     require: true
   }

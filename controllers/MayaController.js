@@ -63,7 +63,6 @@ module.exports = {
       return res.status(200).json({ message: payload })
 
     } catch (error) {
-      console.log(error)
       return res.status(400).json({ error: JSON.stringify(error) })
     }
   },
@@ -202,10 +201,10 @@ module.exports = {
       return res.status(200).json({ message: error })
     }
   },
-  PagarNota: async ({ params }, res) => {
+  PagarNota: async ({ params, body }, res) => {
     
     try {
-      const payload = await MayaService.PagarNota(params)
+      const payload = await MayaService.PagarNota(params, body)
       if (!payload) throw new Error('No hay datos con ese id')
 
       return res.status(200).json({ message: payload })

@@ -277,9 +277,8 @@ module.exports = {
 
     return loteInfo
   },
-  PagarNota: async ({ idPago }) => {
-    console.log(idPago)
-    const query = await Pagos.findByIdAndUpdate(idPago, { status: true })
+  PagarNota: async ({ idPago }, body) => {
+    const query = await Pagos.findByIdAndUpdate(idPago, body)
     return query
   }
 }
