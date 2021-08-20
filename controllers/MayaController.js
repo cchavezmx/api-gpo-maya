@@ -1,3 +1,4 @@
+const puppeteer = require('puppeteer')
 const { MayaService } = require('../service')
 
 module.exports = {
@@ -211,6 +212,41 @@ module.exports = {
 
     } catch (error) {
       return res.status(200).json({ message: error })
+    }
+  },
+  createInvoice: async (req, res) => {
+
+    const browser = await puppeteer.launch({
+      arg: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
+      headless: true
+    })
+
+    const page = await browser.newPage()
+
+    try {
+
+      const getPDFdata = await MayaService.createInvoice(req.body, req.query)
+      await page.setContent(getPDFdata)
+
+      const pdf = await page.pdf({
+        format: 'letter',
+        printBackground: true,
+        scale: 0.9,
+        margin: {
+          left: '0px',
+          top: '0px',
+          right: '0px',
+          bottom: '0px'
+        }
+      })
+
+      await browser.close()
+      res.contentType('application/pdf')
+
+      return res.send(pdf)
+      
+    } catch (error) {
+      return res.status(400).json({})
     }
   }
 

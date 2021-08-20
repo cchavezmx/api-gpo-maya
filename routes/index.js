@@ -53,4 +53,8 @@ router.get('/api/v1/status/payment/lote/:loteId', MayaController.statusPaymentBy
 // Liquidar pago
 router.patch('/api/v1/pagarnota/:idPago', MayaController.PagarNota)
 
+// rutas PDF
+router.post('/api/v1/pdf', MayaController.createInvoice)
+// router.get('/api/v1/invoice/:folio', MayaController.getInvoiceId)
+
 module.exports = router
