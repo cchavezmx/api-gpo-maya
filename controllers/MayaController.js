@@ -217,7 +217,7 @@ module.exports = {
   createInvoice: async (req, res) => {
 
     const browser = await puppeteer.launch({
-      arg: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
       headless: true
     })
 
