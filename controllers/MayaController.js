@@ -223,6 +223,10 @@ module.exports = {
 
     const page = await browser.newPage()
 
+    const headerTemplate = `
+    <h1>Este es el</h1>
+    `
+
     try {
 
       const getPDFdata = await MayaService.createInvoice(req.body, req.query)
@@ -231,7 +235,8 @@ module.exports = {
       const pdf = await page.pdf({
         format: 'letter',
         printBackground: true,
-        scale: 0.9,
+        headerTemplate: headerTemplate,
+        scale: 0.8,
         margin: {
           left: '0px',
           top: '0px',
