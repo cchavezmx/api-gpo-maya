@@ -222,11 +222,6 @@ module.exports = {
     })
 
     const page = await browser.newPage()
-
-    const headerTemplate = `
-    <h1>Este es el</h1>
-    `
-
     try {
 
       const getPDFdata = await MayaService.createInvoice(req.body, req.query)
@@ -235,7 +230,6 @@ module.exports = {
       const pdf = await page.pdf({
         format: 'letter',
         printBackground: true,
-        headerTemplate: headerTemplate,
         scale: 0.8,
         margin: {
           left: '0px',
@@ -252,6 +246,18 @@ module.exports = {
       
     } catch (error) {
       return res.status(400).json({})
+    }
+  },
+  findUser: async (req, res) => {
+    const { user } = req.query
+    try {
+
+      const getUsers = await MayaService.findUser(user)
+      if (!getUsers.length > 0) throw new Error('No hay usuarios relacionados con tu busqueda')
+
+      return res.status(200).json({ message: getUsers })
+    } catch (error) {
+      return res.status(400).json({ message: error })
     }
   }
 

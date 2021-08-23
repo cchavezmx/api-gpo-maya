@@ -3,8 +3,6 @@ function NumerosaLetras (cantidad) {
 
   let numero = 0
   cantidad = parseFloat(cantidad)
-
-  console.log(cantidad)
   
   if (cantidad === '0.00' || cantidad === '0') {
     return 'CERO PESOS CON 00/100 M.N.'
@@ -47,65 +45,63 @@ function unidades (unidad) {
 }
 
 function decenas (decena, unidad) {
-
-  console.log({ decena }, 'mi decena')
-  
+ 
   const diez = ['ONCE ', 'DOCE ', 'TRECE ', 'CATORCE ', 'QUINCE', 'DIECISEIS ', 'DIECISIETE ', 'DIECIOCHO ', 'DIECINUEVE ']
   const decenas = ['DIEZ ', 'VEINTE ', 'TREINTA ', 'CUARENTA ', 'CINCUENTA ', 'SESENTA ', 'SETENTA ', 'OCHENTA ', 'NOVENTA ']
   
-  if (decena === 0 && unidad === 0) {
+  if (+decena === 0 && +unidad === 0) {
     return ''
   }
   
-  if (decena === 0 && unidad > 0) {
+  if (+decena === 0 && +unidad > 0) {
     return unidades(unidad)
   }
   
-  if (decena === 1) {
-    if (unidad === 0) {
-      return decenas[decena - 1]
+  if (+decena === 1) {
+    if (+unidad === 0) {
+      return decenas[+decena - 1]
     } else {
-      return diez[unidad.length - 1]
+      return diez[+unidad - 1]
     }
 
-  } else if (decena === 2) {
-    if (unidad === 0) {
+  } else if (+decena === 2) {
+    if (+unidad === 0) {
       return decenas[decena - 1]
-    } else if (unidad === 1) {
+    } else if (+unidad === 1) {
       const veinte = 'VEINTI' + 'UN '
       return veinte
     } else {
-      const veinte = 'VEINTI' + unidades(unidad)
-      return veinte 
+      const veinte = 'VEINTI' + unidades(+unidad)
+      return +veinte 
     }
   } else {
   
-    if (unidad === 0) {
-      return decenas[decena - 1] + ' '
+    if (+unidad === 0) {
+      return decenas[+decena - 1] + ' '
     }
     if (unidad === 1) {
-      return decenas[decena - 1] + ' Y ' + 'UNO'
+      return decenas[+decena - 1] + ' Y ' + 'UNO'
     }
   
-    return decenas[decena - 1] + ' Y ' + unidades(unidad)
+    return decenas[+decena - 1] + ' Y ' + unidades(+unidad)
   }
 }
   
 function centenas (centena, decena, unidad) {
   const centenas = ['CIENTO ', 'DOSCIENTOS ', 'TRESCIENTOS ', 'CUATROCIENTOS ', 'QUINIENTOS ', 'SEISCIENTOS ', 'SETECIENTOS ', 'OCHOCIENTOS ', 'NOVECIENTOS ']
   
-  if (centena === 0 && decena === 0 && unidad === 0) {
+  if (+centena === 0 && +decena === 0 && +unidad === 0) {
     return ''
   }
-  if (centena === 1 && decena === 0 && unidad === 0) {
+  if (+centena === 1 && +decena === 0 && +unidad === 0) {
     return 'CIEN '
   }
   
-  if (centena === 0 && decena === 0 && unidad > 0) {
-    return unidades(unidad)
+  if (+centena === 0 && +decena === 0 && +unidad > 0) {
+    return unidades(+unidad)
   }
   
-  if (decena === 0 && unidad === 0) {
+  if (+decena === 0 && +unidad === 0) {
     return centenas[centena - 1] + ''
   }
   
@@ -124,7 +120,7 @@ function centenas (centena, decena, unidad) {
 function unidadesdemillar (unimill, centena, decena, unidad) {
   let numero = unidades(unimill) + ' MIL ' + centenas(centena, decena, unidad)
   numero = numero.replace('MIL ', 'MIL ')
-  if (unidad === 0) {
+  if (+unidad === 0) {
     return numero.replace(' Y ', ' ')
   } else {
     return numero

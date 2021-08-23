@@ -57,4 +57,7 @@ router.patch('/api/v1/pagarnota/:idPago', MayaController.PagarNota)
 router.post('/api/v1/pdf', MayaController.createInvoice)
 // router.get('/api/v1/invoice/:folio', MayaController.getInvoiceId)
 
+// Routes de busqueda de niños
+router.get('/api/v1/search', MayaController.findUser)
+
 module.exports = router

@@ -284,13 +284,10 @@ module.exports = {
   },
   createInvoice: async (body, query) => {
 
-    console.log(body)
-    
     const { mensualidad, dataClient, fechaPago, dataLote, mes, ctaBancaria, banco, refBanco, dataProject } = body
 
     const letrasToTexto = NumerosaLetras(mensualidad)
     const precioMensualidad = monyIntlRef(+mensualidad)
-    console.log(precioMensualidad)
     const lafecha = dateIntlRef(fechaPago, 'full')
     /**
      * TODO 
@@ -570,6 +567,25 @@ module.exports = {
     </html>    
     `
     return webTemplate
+
+  },
+  findUser: async (query) => {
+    const araryQuery = query.split(' ').map(query => new RegExp(`${query}.*`, 'i'))
+
+    const userList = new Promise((resolve) => {
+      resolve(
+        Clientes
+          .aggregate()
+          .match({ nombre: { $all: araryQuery } })
+      )
+    }).then(res => res)
+
+    const responseQuery = await Promise.all([userList])
+      .then((res) => {
+        return res[0]
+      })
+
+    return responseQuery
 
   }
 }
