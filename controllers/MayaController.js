@@ -32,9 +32,7 @@ module.exports = {
     }
   },
   getProyectoById: async (req, res) => {
-
     const { id } = req.params
-
     try {
       const payload = await MayaService.getProyectoById(id)
       if (!payload) throw new Error('Id invalido')
@@ -83,6 +81,20 @@ module.exports = {
 
     } catch (error) {
       return res.status(400).json({ error: JSON.stringify(error) })
+    }
+
+  },
+  assignLote: async (req, res) => {
+    const { body, params } = req
+
+    try {
+      const mutate = await MayaService.assignLote(body, params)
+      if (!mutate) throw new Error('Error en la asignacion de lote')
+
+      return res.status(200).json({ message: mutate })
+
+    } catch (error) {
+      return res.status(400).json({ message: error })
     }
 
   },
@@ -176,6 +188,18 @@ module.exports = {
 
     } catch (error) {
       return res.status(400).json({ message: error })
+    }
+  },
+  getPagosByProject: async (req, res) => {
+    const { query, params } = req
+
+    try {
+      const getPagos = await MayaService.getPagosByProject(query, params)
+      if (getPagos.lenth === 0) throw new Error('No hay pagos con la infomacion proporcionada')
+
+      return res.status(200).json({ message: getPagos })
+    } catch (error) { 
+      return res.status(400).json({ error })
     }
   },
   infoToInvoiceById: async ({ params }, res) => {

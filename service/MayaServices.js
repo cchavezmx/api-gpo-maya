@@ -7,11 +7,60 @@ module.exports = {
     return new Proyecto(payload).save()
   },
   // 
-  getAllProyectos: () => {
-    return Proyecto.find({ isActive: true })
+  getAllProyectos: async () => {
+
+    const agg = [
+      {
+        $match: {
+          isActive: true
+        }
+      }, {
+        $lookup: {
+          from: 'lotes', 
+          localField: '_id', 
+          foreignField: 'proyecto', 
+          as: 'activos'
+        }
+      }
+    ]
+    
+    const query = new Promise((resolve) => {
+      resolve(
+        Proyecto.aggregate(agg)
+      )
+    }).then(res => res)  
+
+    return await query
+    
   },
   // 
-  getProyectoById: (id) => Proyecto.findById(id),
+  getProyectoById: async (id) => {
+
+    const agg = [
+      {
+        $match: {
+          proyecto: mongoose.Types.ObjectId(id)
+        }
+      }, {
+        $lookup: {
+          from: 'clientes', 
+          localField: 'cliente', 
+          foreignField: '_id', 
+          as: 'clienteData'
+        }
+      }
+    ]
+
+    const query = new Promise((resolve) => {
+      resolve(
+        Lotes.aggregate(agg)
+      )
+    }).then(res => res)
+
+    const resultQuery = await Promise.all([query])
+      .then(res => res[0])
+    return resultQuery
+  },
   // 
   getProyectoByName: (name) => {
     const proyectos = Proyecto.find({ title: name })
@@ -64,6 +113,28 @@ module.exports = {
 
     return await data
 
+  },
+  assignLote: async (payload, { idProyecto }) => {
+    const datalote = {
+      proyecto: idProyecto,
+      cliente: payload.idUser,
+      lote: payload.lote,
+      manzana: payload.manzana,
+      precioTotal: payload.precioTotal,
+      enganche: payload.enganche,
+      financiamiento: payload.financiamiento,
+      plazo: payload.plazo,
+      mensualidad: payload.mensualidad
+    }
+
+    const newLote = new Promise((resolve) => {
+      resolve(
+        new Lotes(datalote).save()
+      )  
+    })
+
+    return Promise.all([newLote])
+      .then(res => res)
   },
   // todos los lotes con nombre de usuario del proyecto
   getAllLotesByProyectId: async (idProyecto) => {
@@ -200,6 +271,32 @@ module.exports = {
       .then(res => res[0])
 
     return res
+
+  },
+  getPagosByProject: async ({ idcliente }, { idProject }) => {
+    const agg = [
+      [
+        {
+          $match: {
+            proyecto: mongoose.Types.ObjectId(idProject)
+          }
+        }, {
+          $match: {
+            cliente: mongoose.Types.ObjectId(idcliente)
+          }
+        }
+      ]
+    ]
+
+    const pagos = new Promise((resolve) => {
+      resolve(
+        Pagos.aggregate(agg)
+      )
+    })
+      .then(res => res)
+
+    return await Promise.all([pagos])
+      .then(res => res[0])
 
   },
   infoToInvoiceById: async ({ idPago }) => {

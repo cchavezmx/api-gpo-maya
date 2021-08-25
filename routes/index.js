@@ -10,7 +10,11 @@ router.post('/api/v1/login', MayaController.login)
 router.post('/api/v1/register', MayaController.register)
 
 router.post('/api/v1/add/proyecto', MayaController.addProyecto)
+
+// todos LOS PROYECTOS ACTIVOS
 router.get('/api/v1/proyectos', MayaController.getAllProyectos)
+
+// projecto por id
 router.get('/api/v1/proyecto/:id', MayaController.getProyectoById)
 
 // clientes
@@ -38,6 +42,9 @@ router.get('/api/v1/lotes/proyecto/:idProyecto', MayaController.getAllLotesByPro
 // Crear usuario y añadirlo a nuevo proyecto
 router.post('/api/v1/assign/lote/user/:idProyecto/', MayaController.assignLoteToNewUser)
 
+// Añadir lote a cliente existente
+router.post('/api/v1/add/lote/user/:idProyecto/', MayaController.assignLote)
+
 // LEER INFORMACION DE PAGO
 router.get('/api/v1/showinfoinvoice/:idPago', MayaController.infoToInvoiceById)
 
@@ -59,5 +66,9 @@ router.post('/api/v1/pdf', MayaController.createInvoice)
 
 // Routes de busqueda de niños
 router.get('/api/v1/search', MayaController.findUser)
+
+// TODO CLERAR RUTA DE PAGOS POR CLIENTE Y PROJECTO
+// insertamos por query el id del cliente
+router.get('/api/v1/pagos/:idProject', MayaController.getPagosByProject)
 
 module.exports = router
