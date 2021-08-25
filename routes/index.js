@@ -71,4 +71,7 @@ router.get('/api/v1/search', MayaController.findUser)
 // insertamos por query el id del cliente
 router.get('/api/v1/pagos/:idProject', MayaController.getPagosByProject)
 
+// ruta completa de cliente, 
+// lotes activos, pagos realizados
+
 module.exports = router
